@@ -1,0 +1,34 @@
+<div id="setup_question" class="modal-box">
+  <header> <a href="{{href}}" class="js-modal-close close">×</a>
+    <h3>
+      <img class="ui circular middle aligned image" alt="icon" src="https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/question_38x38.png?v=1648214852200">
+      Setup Security Question
+    </h3>
+  </header>
+  
+  <div class="modal-body">
+    <div id="errmsg_question" class="ui hidden negative message">
+    </div>
+
+    <div id="enroll_ui_question" class="example">
+
+      <div id="question" class="ui selection dropdown">
+        <i class="dropdown icon"></i>
+        <div class="default text">Select question</div>
+        <div class="menu">
+          {{#questions}}
+            <div class="item" data-value="{{question}}">{{questionText}}</div>
+          {{/questions}}
+        </div>
+      </div>
+
+      <div class="ui input">
+        <input id="answer" type="text" placeholder="Enter answer">
+      </div>
+      
+      <div class='ui buttons'>
+        <input id='enroll' class='ui primary button' type='button' value='Submit' onclick='enrollQuestion();' />
+      </div>
+    </div>  
+  </div>
+</div>

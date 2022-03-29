@@ -1,0 +1,10 @@
+.loader {
+  position : fixed;
+  z-index: 9999;
+  background : url('https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/loading-13.gif?v=1648129630697') 50% 50% no-repeat;
+  top : 0px;
+  left : 0px;
+  height : 100%;
+  width : 100%;
+  cursor : wait;
+}

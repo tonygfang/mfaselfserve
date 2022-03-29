@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>head}}
+
+    <script src="/assets/js/delete_factor.js"></script>
+    <script src="/assets/js/loader.js"></script>
+
+  </head>
+  <body id="samples">
+
+    {{>menu}}
+
+    {{>loader}}
+
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+        <div class="doc-overview">
+          <h2 class="ui dividing header" data-se="overview-doc-header">
+            My MFA
+          </h2>
+          <p>Hello, {{userinfo.name}}. Manage your MFA here. Remove or setup additional factors.
+          </p>
+          <p>This route is protected with the <code>oidc.ensureAuthenticated()</code> middleware, which will ensure that this page cannot be accessed until you have authenticated.</p>
+        </div>
+
+        <table class="ui table compact collapsing" style="width:100%">
+          <tbody>
+            {{#factorArray}}
+              <tr>
+                <td>{{name}}</td>
+                <td style="width:100px">
+                  {{#enableSetup}} {{>button-setup-link}} {{/enableSetup}}
+                  {{^enableSetup}} {{>button-remove}} {{/enableSetup}}
+                </td>
+              </tr>
+            {{/factorArray}}
+          </tbody>
+        </table>
+
+        {{#multiFactorArray}}
+          <table class="ui table compact collapsing" style="width:100%">
+            <tbody>
+              <td>{{name}}</td>
+              <td style="width:100px">
+                {{#enableSetup}} {{>button-setup-link}} {{/enableSetup}}
+              </td>
+              {{#factors}}
+                <tr>
+                  <td><p style="margin-left: 40px; font-size: small">{{name}}</p></td>
+                  <td>{{>button-remove}}</td>
+                </tr>
+              {{/factors}}
+            </tbody>
+          </table>
+        {{/multiFactorArray}}
+
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<div class="ui info event-modal tiny modal" data-object="popup-sms">
+  <i class="close icon"></i>
+  <div class="header">
+    <img class="ui circular middle aligned image" alt="icon" src="https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/sms_38x38.png?v=1648214837545">
+    Setup SMS
+  </div>    
+  <div class="content">  
+  
+    <div id="errmsg_sms" class="ui negative message">
+    </div>
+
+    <div id="resend_msg_sms" class="ui warning message">
+      <p>Haven't received an SMS? To try again, click Re-send code.</p>
+    </div>
+
+    <div id="enroll_ui_sms">
+      <p>Enter phone number (country code optional).</p> 
+      <p>e.g. 780-123-4567, +178012345678</p>
+      
+      <div class="ui input expand">
+        <input id="phone_sms" type="text" placeholder="Enter phone" />
+      </div>
+
+      <input id='enroll_button_sms' class='ui primary button' type='button' value='Send code' onclick='enrollSMS();' />
+      <input id='resend_button_sms' class='ui primary button' type='button' value='Resend code' onclick='resendSMS();' />
+
+    </div>
+
+    <div id="verify_ui_sms">
+
+      <div class="ui expand">
+        <div class="ui input">
+          <input id="code_sms" type="text" placeholder="Enter code" />
+        </div>
+      </div>   
+
+      <input id='activate_sms' class='ui primary button' type='button' value='Verify' onclick='activateSMS();' />
+    </div>
+
+  </div>
+</div>

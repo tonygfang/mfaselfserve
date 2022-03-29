@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>head}}
+
+    <!-- link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.css" rel="stylesheet" type="text/css"-->
+
+    <link href="/assets/css/event_modal.css" type="text/css" rel="stylesheet" />
+    <script src="/assets/js/event_modal.js"></script>
+
+    <link href="/assets/css/popup_ov.css" type="text/css" rel="stylesheet" />
+
+    <script src="/assets/js/delete_factor.js"></script>
+    <script src="/assets/js/factors.js"></script>
+    <script src="/assets/js/loader.js"></script>
+  </head>
+  <body id="samples">
+
+    {{>menu}}
+
+    {{>loader}}
+    
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+        <div class="doc-overview">
+          <h2 class="ui dividing header" data-se="overview-doc-header">
+            My MFA 2
+          </h2>
+          <p>Hello, {{userinfo.name}}. Manage your MFA 2 here. Remove or setup additional factors.
+          </p>
+          <p>This route is protected with the <code>oidc.ensureAuthenticated()</code> middleware, which will ensure that this page cannot be accessed until you have authenticated.</p>
+        </div>
+
+        {{>popup-question}}
+        {{>popup-email}}
+        {{>popup-sms}}
+        {{>popup-call}}
+        {{>popup-ov}}
+        {{>popup-google}}
+        {{>popup-webauthn}}
+        
+        <table class="ui table">
+          <tbody>
+            {{#factorArray}}
+              <tr>
+                <td>
+                  <h4 class="ui image header">
+                    <img src="{{iconUrl}}" class="ui circular tiny image">
+                    <div class="content">{{name}}</div>
+                  </h4>
+                </td>
+                <td style="width:100px">
+                  {{#enableSetup}} {{>button-setup}} {{/enableSetup}}
+                  {{^enableSetup}} {{>button-remove}} {{/enableSetup}}
+                </td>
+              </tr>
+            {{/factorArray}}
+          </tbody>
+        </table>
+
+        {{#multiFactorArray}}
+          <table class="ui table">
+            <tbody>
+              <td>
+                <h4 class="ui image header">
+                  <img src="{{iconUrl}}" class="ui circular tiny image">
+                  <div class="content">{{name}}</div>
+                </h4>
+              </td>
+              <td style="width:100px">{{>button-setup}}</td>
+              {{#factors}}
+                <tr>
+                  <td>
+                    <p style="margin-left: 40px; font-size: small">{{name}}</p>
+                  </td>
+                  <td>{{>button-remove}}</td>
+                </tr>
+              {{/factors}}
+            </tbody>
+          </table>
+        {{/multiFactorArray}}
+
+
+      </div>
+
+    </div>
+  </body>
+</html>

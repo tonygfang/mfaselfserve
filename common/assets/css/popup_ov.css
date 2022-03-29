@@ -1,0 +1,18 @@
+.qrcode_parent {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.qrcode_qrcode {
+  position: relative;
+  top: 0;
+  left: 0;
+  border: 1px solid #000000;
+}
+
+.qrcode_check {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
