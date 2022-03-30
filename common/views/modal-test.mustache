@@ -1,0 +1,146 @@
+
+
+
+
+
+
+<div class="ui info event-modal modal" data-object="trigger0" id="modal0">
+  <i class="close icon"></i>
+  <div class="header">
+    Trigger 0
+  </div>    
+  <div class="content">
+    <p>plain</p>
+    <div class="ui primary button">Do nothing</div>
+
+  </div>
+  <div class="actions">
+    <div class="ui approve button">Approve</div>
+    <div class="ui button">Neutral</div>
+    <div class="ui cancel button">Cancel</div>  
+  </div>    
+</div>
+
+<div class="ui info event-modal modal mini" data-object="trigger1" id="modal1">
+  <i class="close icon"></i>
+  <div class="header">
+    Trigger 1
+  </div>    
+  <div class="content">
+    <p>mini</p>
+    <div class="ui primary button">Do nothing</div>
+
+  </div>
+  <div class="actions">
+    <div class="ui approve button">Approve</div>
+    <div class="ui button">Neutral</div>
+    <div class="ui cancel button">Cancel</div>  
+  </div>    
+</div>
+
+<div class="ui info event-modal modal tiny" data-object="trigger2" id="modal2">
+  <i class="close icon"></i>
+  <div class="header">
+    Trigger 2
+  </div>    
+  <div class="content">
+    <p>tiny</p>
+  </div>
+  <div class="actions">
+    <div class="ui deny black button">Close</div>
+  </div>    
+</div>      
+
+<div class="ui info event-modal modal small" data-object="trigger3" id="modal3">
+  <i class="close icon"></i>
+  <div class="header">
+    Trigger 3
+  </div>    
+  <div class="content">
+    <p>small</p>
+  </div>
+  <div class="actions">
+    <div class="ui deny black button">Close</div>
+  </div>  
+</div>   
+
+<div class="ui info event-modal modal large" data-object="trigger4" id="modal4">
+  <i class="close icon"></i>
+  <div class="header">
+    Trigger 4
+  </div>    
+  <div class="content">
+    <p>large</p>
+  </div>
+  <div class="actions">
+    <div class="ui deny black button">Close</div>
+  </div>  
+</div>   
+
+<div class="ui info event-modal modal fullscreen" data-object="trigger5" id="modal5">
+  <i class="close icon"></i>
+  <div class="header">
+    Trigger 5
+  </div>    
+  <div class="content">
+    <p>fullscreen</p>
+  </div>
+  <div class="actions">
+    <div class="ui deny black button">Close</div>
+  </div>  
+</div>   
+
+
+{{>popup-question}}
+
+<div class="content">
+  <div id="trigger0" class="ui primary button">
+    plain
+  </div> 
+  <div id="trigger1" class="ui primary button">
+    mini
+  </div>
+  <div id="trigger2" class="ui primary button">
+    tiny
+  </div>
+  <div id="trigger3" class="ui primary button">
+    small
+  </div>    
+  <div id="trigger4" class="ui primary button">
+    large
+  </div>
+  <div id="trigger5" class="ui primary button">
+    fullscreen
+  </div>    
+  
+  <div id="popup-question" class="ui primary button">
+    question2
+  </div>   
+   
+</div>
+
+
+
+
+
+<div class="ui modal" id="modal1">
+	<div class="header">Modal 1</div>
+	<div class="content">Some info will go here...</div>
+	<div class="actions">
+		<div class="ui blue labeled icon button" id="btn-modal-1"><i class="arrow sign left icon"></i>Close me</div>
+	</div>
+</div>
+
+<div class="ui fullscreen modal" id="modal2">
+ <div class="header"> Modal 2 </div>
+ <div class="content">Some stuff  </div>
+ <div class="actions">
+  	<div class="ui red labeled icon button" id="btn-modal-2"><i class="arrow sign left icon"></i>Close me</div>
+ </div>
+</div>
+
+
+<center style="padding: 30px;">
+  <button data-modal="modal1" id="call-modal-1" class="ui green button">Modal 1</button>
+  <button data-modal="modal2" id="call-modal-2" class="ui red button">Modal 2</button>
+</center>

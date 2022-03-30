@@ -1,0 +1,96 @@
+<div class="ui info event-modal tiny modal" data-object="popup-ov">
+  <i class="close icon"></i>
+  <div class="header">
+    <img class="ui circular middle aligned image" alt="icon" src="https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/oktaVerify_38x38.png?v=1648214837364">
+    Setup Okta Verify
+  </div>    
+  <div class="content">  
+  
+    <div id="errmsg_push" class="ui negative message">
+    </div>
+
+    <div id="enroll_ui_push">
+      <p>Download Okta Verify from the <a href="https://itunes.apple.com/us/app/okta-verify/id490179405">App Store</a> or <a href="https://play.google.com/store/apps/details?id=com.okta.android.auth">Google Play Store</a> onto your mobile device.</p>
+
+      <input id='enroll_push' class='ui primary button' type='button' value='Enroll Okta Verify' onclick='enrollPush();' />
+    </div>
+
+    <div id="verify_qrcode_ui_push">
+      <p>Launch Okta Verify on your mobile device and select 'Add an account'. Scan the QR code to continue.</p>
+      
+      <div id="qrcode_push" class="qrcode_parent">
+        <img id="img_qrcode_push" class="qrcode_qrcode ui bordered image" alt="QR code" src="">
+        <img id="img_check_push" class="qrcode_check" alt="green check" src="https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/4141690_sm.png?v=1647638783685">
+      </div>
+      
+      <p><a href='javascript:null' onClick='javascript:showPushCantScan();'>Can't Scan?</a></p>
+    </div>
+
+    <div id="verify_cantscan_ui_push">
+      <p>Can't scan QR Code?</p>
+      
+      <div id="cantscan_setup_option_push" class="ui selection dropdown expand">
+        <i class="dropdown icon"></i>
+        <div class="default text">Select option</div>
+        <div class="menu">
+          <div class="item" data-value="sms">Send activation link via SMS</div>
+          <div class="item" data-value="email">Send activation link via Email</div>
+          <div class="item" data-value="nopush">Setup manually without push notification</div>
+        </div>
+      </div>
+
+      <div id="verify_cantscan_sms_ui_push">
+        <p>Enter phone number (country code optional).</p> 
+        <p>e.g. 780-123-4567, +178012345678</p>
+
+        <div class="ui input expand">
+          <input id="phone_push" type="text" placeholder="Enter phone" />
+        </div>
+
+        <input id='activate_sms_push' class='ui primary button' type='button' value='Send' onclick='sendPushActivationSMS();' />
+      </div>      
+
+      <div id="verify_cantscan_email_ui_push">
+        <input id='activate_email_push' class='ui primary button' type='button' value='Send' onclick='sendPushActivationEmail();' />
+      </div>
+      
+      <div id="verify_cantscan_ui_nopush">
+        <div id="verify_cantscan_secret_nopush">       
+          <p>Enter your Okta account username and enter the following in the Secret Key Field</p>
+          <div id="secret_nopush">xyz</div>
+          <input id='verify_secret_next_nopush' class='ui primary button' type='button' value='Next' onclick='secretNextNoPush();' />
+        </div>
+        <div id="verify_cantscan_code_nopush">
+          <p>Enter code displayed from the application</p>
+        
+          <div class="ui expand">
+            <div class="ui input">
+              <input id="code_nopush" type="text" placeholder="Enter code" />
+            </div>
+          </div>   
+
+          <input id='activate_nopush' class='ui primary button' type='button' value='Verify code' onclick='activateNoPush();' />
+        </div>
+      </div>
+      
+      <p><a href='javascript:null' onClick='javascript:showPushQRCode();'>Scan QR Code</a></p>
+    </div>
+
+    <div id="activate_sms_sent_push">
+      <p>SMS sent!</p>
+      <p>View the SMS on your mobile device.</p>
+      <p id="phone_activate_sms_sent_push"></p>
+      
+      <p><a href='javascript:null' onClick='javascript:showPushCantScan();'>Back</a></p>
+    </div>
+
+    <div id="activate_email_sent_push">
+      <p>Activation email sent!</p>
+      <p>Open the email from your mobile device.</p>
+      <p>{{userinfo.email}}</p>
+      
+      <p><a href='javascript:null' onClick='javascript:showPushCantScan();'>Back</a></p>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>head}}
+
+    <link href="/assets/css/event_modal.css" type="text/css" rel="stylesheet" />
+
+    <script src="/assets/js/loader.js"></script>
+    <script src="/assets/js/event_modal.js"></script>
+    <script src="/assets/js/factors.js"></script>
+    
+  </head>
+  <body id="samples">
+
+    {{>menu}}
+
+    {{>loader}}
+    
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+        <div class="doc-overview">
+          <h2 class="ui dividing header" data-se="overview-doc-header">
+            My Test xxx
+          </h2>
+          <p>Hello, {{userinfo.name}}. Testing!!!
+          </p>
+          <p>This route is protected with the <code>oidc.ensureAuthenticated()</code> middleware, which will ensure that this page cannot be accessed until you have authenticated.</p>
+        </div>
+
+
+      {{>modal-test}}
+
+
+      </div>
+
+    </div>
+  </body>
+</html>

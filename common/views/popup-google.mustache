@@ -1,0 +1,53 @@
+<div class="ui info event-modal tiny modal" data-object="popup-google">
+  <i class="close icon"></i>
+  <div class="header">
+    <img class="ui circular middle aligned image" alt="icon" src="https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/googleAuth_38x38.png?v=1648214837511">
+    Setup Google Authenticator
+  </div>    
+  <div class="content">  
+  
+    <div id="errmsg_google" class="ui negative message">
+    </div>
+
+    <div id="enroll_google">
+      <p>Download Google Authenticator from the <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605">App Store</a> or <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Play Store</a> onto your mobile device.</p>
+
+      <input id='enroll_google' class='ui primary button' type='button' value='Enroll Google Authenticator' onclick='enrollGoogle();' />
+    </div>
+
+    <div id="verify_qrcode_google">
+      <p>Launch Google Authenticator, tap the "+" icon, then select "Scan barcode".</p>
+      
+      <div id="qrcode_google" class="qrcode_parent">
+        <img id="img_qrcode_google" class="qrcode_qrcode ui bordered image" alt="QR code" src="">
+      </div>
+      
+      <p><a href='javascript:null' onClick='javascript:showGoogleCantScan();'>Can't Scan?</a></p>
+      <input id='verify_qrcode_next_google' class='ui primary button' type='button' value='Next' onclick='showVerifyGoogle();' />
+    </div>
+
+    <div id="verify_cantscan_google">
+      <p>Can't scan QR Code?</p>
+      
+      <p>To set up manually enter your Okta Account username and then input the following in the Secre Key field</p>
+      <div id="secret_google">xyz</div>
+      
+      <input id='verify_cantscan_next_google' class='ui primary button' type='button' value='Next' onclick='showVerifyGoogle();' />
+      
+      <p><a href='javascript:null' onClick='javascript:showGoogleQRCode();'>Scan QR Code</a></p>
+    </div>
+        
+    <div id="verify_code_google">
+      <p>Enter code displayed from the application</p>
+        
+      <div class="ui expand">
+        <div class="ui input">
+          <input id="code_google" type="text" placeholder="Enter code" />
+        </div>
+      </div>   
+
+      <input id='activate_google' class='ui primary button' type='button' value='Verify code' onclick='activateGoogle();' />
+    </div>
+
+  </div>
+</div>
