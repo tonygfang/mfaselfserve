@@ -13,7 +13,6 @@ const https = require("https");
 //   });
 // }
 
-//https://customer-dev.cwbankgroup.com/oauth2/austor3jdoL002yED0h7
 
 var ISSUER = process.env.OKTA_URL + '/oauth2/' + process.env.AUTHORIZATION_SERVER;
 var CLIENT_ID = process.env.CLIENT_ID;
