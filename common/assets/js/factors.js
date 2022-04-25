@@ -977,6 +977,7 @@ function enrollWebauthn() {
       // console.log(response._embedded.activation);
       console.log(response._embedded.activation.challenge);
       console.log(response._embedded.activation.user.id);
+      console.log(response._embedded.activation.rp);
 
       // let cred = {
       //   publicKey: response._embedded.activation,

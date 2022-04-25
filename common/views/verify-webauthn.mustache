@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    {{>head}}
+    
+  </head>
+
+  <body id="samples">
+    {{>menu}}
+
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+
+        <header>
+          <h2 class="centered">Webauthn Testing</h2>
+        </header>
+
+        <div class="field">
+          <div class="ui label">
+            Enter challenge
+          </div>      
+          <div class="ui input">
+            <input id="challenge_input" type="text" placeholder="Enter challenge" />
+          </div>
+        </div>
+
+        <div class="ui divider"></div>
+
+        <div class="field">
+          <div class="ui label">
+            Enter credential id
+          </div>      
+          <div class="ui input">
+            <input id="credentialid1_input" type="text" placeholder="Enter credentialid 1" />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui label">
+            Enter credential id
+          </div>      
+          <div class="ui input">
+            <input id="credentialid2_input" type="text" placeholder="Enter credentialid 2" />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="ui label">
+            Enter credential id
+          </div>      
+          <div class="ui input">
+            <input id="credentialid3_input" type="text" placeholder="Enter credentialid 3" />
+          </div>
+        </div>
+
+        <div class="ui divider"></div>
+
+        <div class="field">
+          <div class="ui label">
+            Enter rpid
+          </div>      
+          <div class="ui input">
+            <input id="rpid_input" type="text" placeholder="Enter rpid" />
+          </div>
+        </div>
+
+        <input id="verify_button" class="ui primary button" type="button" value="Verify webauthn" onclick="verifyWebauthn();" />
+
+      <script>
+
+      const fn = {};
+
+      /**
+       * Converts any url safe characters in a base64 string to regular base64 characters
+       * @param str base64 string that might contain url safe characters
+       * @returns base64 formatted string
+       */
+      fn.base64UrlSafeToBase64 = function (str) {
+        return str
+          .replace(new RegExp("_", "g"), "/")
+          .replace(new RegExp("-", "g"), "+");
+      };
+
+      /**
+       * Converts an ArrayBuffer object that contains binary data to base64 encoded string
+       * @param bin ArrayBuffer object
+       * @returns base64 encoded string
+       */
+      fn.binToStr = function (bin) {
+        return btoa(
+          new Uint8Array(bin).reduce((s, byte) => s + String.fromCharCode(byte), "")
+        );
+      };
+
+      /**
+       * Converts base64 string to binary data view
+       * @param str in base64 or base64UrlSafe format
+       * @returns converted Uint8Array view of binary data
+       */
+      fn.strToBin = function (str) {
+        return Uint8Array.from(atob(this.base64UrlSafeToBase64(str)), (c) =>
+          c.charCodeAt(0)
+        );
+      };
+
+      function verifyWebauthn() {
+        let challenge = $("#challenge_input").val();
+        let credentialid1 = $("#credentialid1_input").val();
+        let credentialid2 = $("#credentialid2_input").val();
+        let credentialid3 = $("#credentialid3_input").val();
+        let rpid = $("#rpid_input").val();
+
+        console.log(challenge);
+
+        console.log(credentialid1);
+        console.log(credentialid2);
+        console.log(credentialid3);
+
+        console.log(rpid);
+
+        const creds = [credentialid1, credentialid2, credentialid3];
+
+        let allowCredentials = [];
+        creds.forEach(cred => {
+          if (cred) {
+            allowCredentials.push({
+              type: 'public-key',
+              id: fn.strToBin(cred),
+            })
+          }
+        });
+
+        console.log(allowCredentials);
+
+        // Convert activation object's challenge nonce from string to binary
+
+        const options = {
+          challenge: fn.strToBin(challenge),
+          // rpId: rpid, // this can't be a public suffix e.g. "glitch.me"
+
+          allowCredentials: allowCredentials,
+
+          userVerification: "preferred",
+          //extensions: {},
+        };
+
+        if (rpid) {
+          options['rpId'] = rpid;
+        }
+
+        console.log(options);
+
+        // Call the WebAuthn javascript API to get signed assertion from the WebAuthn authenticator
+
+        navigator.credentials
+          .get({
+            publicKey: options,
+          })
+
+          .then(function (assertion) {
+            // Get the client data, authenticator data, and signature data from callback result, convert from binary to string
+
+            var clientData = fn.binToStr(assertion.response.clientDataJSON);
+            var authenticatorData = fn.binToStr(assertion.response.authenticatorData);
+            var signatureData = fn.binToStr(assertion.response.signature);
+
+            console.log(clientData);
+            console.log(authenticatorData);
+            console.log(signatureData);
+          });
+      }
+
+
+      </script>    
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

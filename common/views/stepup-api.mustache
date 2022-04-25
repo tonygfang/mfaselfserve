@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>head}}
+
+    <link href="/assets/css/event_modal.css" type="text/css" rel="stylesheet" />
+    <script src="/assets/js/event_modal.js"></script>
+    <script src="/assets/js/factorutil.js"></script>
+    <script src="/assets/js/stepup_api.js"></script>
+    
+    <link href="/assets/css/mystyle.css" type="text/css" rel="stylesheet" />
+    
+  </head>
+  <body id="samples">
+
+    {{>menu}}
+
+    {{>popup-stepup-api}}
+   
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+        <div class="doc-overview">
+          <h2 class="ui dividing header" data-se="overview-doc-header">
+            My Step Up 2 MFA testing
+          </h2>
+          <p>Hello, {{userinfo.name}}. Testing!!!
+          </p>
+          <p>This route is protected with the <code>oidc.ensureAuthenticated()</code> middleware, which will ensure that this page cannot be accessed until you have authenticated.</p>
+        </div>
+
+        <div id="transfer_success_msg" class="ui positive message">
+        </div>
+
+        <div id="transfer_error_msg" class="ui negative message">
+        </div>
+
+        <h3 class="ui dividing header">
+          Account History
+        </h2>
+
+        <table class="ui table">
+          <thead>
+            <tr>
+              <th>Balance Details</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td>Ending balance as of <script> document.write("<strong>" + (new Date()).toString() + "</strong>");</script></td>
+                <td>$5500.29</td>
+              </tr>
+
+              <tr>
+                <td>Available balance</td>
+                <td>$5200.00</td>
+              </tr>
+
+          </tbody>
+        </table>
+
+        <h3 class="ui dividing header">
+          Transfers
+        </h2>
+
+        <div id="from_account" class="ui selection dropdown expand">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select from account</div>
+          <div class="menu">
+            <div class="item" data-value="800000">800000 Corporate</div>
+            <div class="item" data-value="800001">800001 Chequing</div>
+          </div>
+        </div>
+
+        <div id="to_account" class="ui selection dropdown expand">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select to account</div>
+          <div class="menu">
+            <div class="item" data-value="800000">800000 Corporate</div>
+            <div class="item" data-value="800001">800001 Chequing</div>
+          </div>
+        </div>
+
+        <div class="ui input expand">
+          <input id="amount" type="text" placeholder="Amount to transfer" value="1000" />
+        </div>
+
+        <input id='transfer' class='ui primary button' type='button' value='Transfer' onclick='checkTransfer();' />
+
+      </div>
+
+    </div>
+  </body>
+</html>
