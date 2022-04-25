@@ -1,4 +1,4 @@
-
+ 
 const factorMap = {
   sms_OKTA: {
     factorType: "sms",
@@ -142,7 +142,7 @@ function getName(type, provider) {
   
   let name = factor.name;
   console.log(name);
-  
+
   return name;
 }
 
@@ -195,7 +195,7 @@ function getErrorMessage(err) {
 
   return msg;
 }
-
+ 
 function getIconUrl(factorType, provider) {
   let key = `${factorType}_${provider}`;
   let iconUrl = factorMap[key].iconUrl;

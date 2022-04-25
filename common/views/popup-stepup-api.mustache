@@ -1,0 +1,139 @@
+<div class="ui info event-modal tiny modal" data-object="button-stepup-api" id="popup-stepup-api">
+  <i class="close icon"></i>
+  <div class="header">
+    MFA Step Up API
+  </div>    
+  <div class="content">
+
+    <span>
+      <img id="img_factor_stepup" class="ui circular mini aligned image" alt="icon" src="https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/email_38x38.png?v=1648214837403" />
+
+      <div id="factor_dropdown" class="ui dropdown">
+        <i class="dropdown icon"></i>
+      </div>    
+
+      <div class="ui divider"></div>
+      
+      <h3 id="name_factor_stepup" class="ui header">Factor name</h3>      
+
+      <div id="error_msg_stepup" class="ui negative message">
+      </div>
+
+      <div id="warning_msg_stepup" class="ui warning message">
+      </div>
+
+
+      <div id="question_stepup">
+        <p id="question_text">question here...</p>
+
+        <div class="field">
+          <div class="ui label">Enter answer</div>      
+          <div class="ui input"><input id="question_answer" type="text" placeholder="Enter answer" /></div>
+        </div>
+
+        <div class='ui buttons'>
+          <input id='enroll' class='ui primary button' type='button' value='Submit' onclick='verifyQuestion();' />
+        </div>
+
+      </div>
+
+
+      <div id="sms_stepup">
+        <p id="sms_phone"></p>
+
+        <input id='send_sms' class='ui primary button' type='button' value='Send code' onclick='challengeSMS();' />
+
+        <div class="field">
+          <div class="ui label">Enter code</div>      
+          <div class="ui input"><input id="code_sms" type="text" placeholder="Enter code" /></div>
+          
+        </div>
+
+        <input id='verify_sms' class='ui primary button' type='button' value='Verify' onclick='verifySMS();' />
+        
+      </div>
+
+
+      <div id="call_stepup">
+        <p id="call_phone"></p>
+
+        <input id='send_call' class='ui primary button' type='button' value='Call' onclick='challengeCall();' />
+
+        <div class="field">
+          <div class="ui label">Enter code</div>      
+          <div class="ui input"><input id="code_sms" type="text" placeholder="Enter code" /></div>
+        </div>
+
+        <input id='verify_sms' class='ui primary button' type='button' value='Verify' onclick='verifySMS();' />
+        
+      </div>
+
+
+      <div id="email_stepup">
+        <div id="email_instructions">Send a verification code to...</div>
+
+        <input id='send_email' class='ui primary button' type='button' value='Send me the code' onclick='challengeEmail();' />
+
+        <div id="email_verify_ui">
+          <div class="field">
+            <div class="ui label">Enter code</div>      
+            <div class="ui input"><input id="code_email" type="text" placeholder="Enter code" /></div>
+          </div>
+
+          <input id='verify_email' class='ui primary button' type='button' value='Verify' onclick='verifyEmail();' />
+        </div>
+
+      </div>
+
+
+      <div id="ov_stepup">
+        <div id="ov_push">
+          <input id='send_ov_push' class='ui primary button' type='button' value='Send push' onclick='challengeOVPush();' />
+        
+          <div id="ov_enter_code_link">
+            <p><a href='javascript:null' onClick='javascript:showOVCode();'>Or enter code</a></p>
+          </div>        
+        </div>
+        
+        <div id="ov_code_message">
+          <p>Enter your Okta Verify passcode</p>
+        </div>
+
+        <div id="ov_enter_code">
+          <div class="field">
+            <div class="ui label">Enter code</div>      
+            <div class="ui input"><input id="code_ov" type="text" placeholder="Enter code" /></div>
+          </div>
+
+          <input id='verify_ov' class='ui primary button' type='button' value='Verify' onclick='verifyOVCode();' />
+        </div>
+      </div>
+
+
+      <div id="google_stepup">
+        <div id="google_code_message">
+          <p>Enter your Google Authenticator passcode</p>
+        </div>
+
+        <div id="google_code">
+          <div class="field">
+            <div class="ui label">Enter code</div>      
+            <div class="ui input"><input id="code_google" type="text" placeholder="Enter code" /></div>
+          </div>
+
+          <input id='verify_google' class='ui primary button' type='button' value='Verify' onclick='verifyGoogle();' />
+        </div>
+      </div>
+
+
+      <div id="webauthn_stepup">
+        <p>Your browser or device will prompt you to verify with a security key or biometric authenticator. Follow the instructions to complete authentication.</p>
+
+        <input id='retry_webauthn' class='ui primary button' type='button' value='Retry' onclick='challengeWebauthn();' />
+      </div>
+
+
+    </span>
+
+  </div>  
+</div>

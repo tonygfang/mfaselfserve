@@ -31,6 +31,12 @@ const okta = require("@okta/okta-sdk-nodejs");
 
 const factorutil = require("./factorutil");
 
+// "atob" should be read as "ASCII to binary"
+// atob converts Base64-encoded ASCII string to binary
+const atob = (base64) => {
+  return Buffer.from(base64, "base64").toString("binary");
+};
+
 module.exports = function SampleWebServer(
   sampleConfig,
   extraOidcOptions,
@@ -80,6 +86,9 @@ module.exports = function SampleWebServer(
 
   app.use(oidc.router);
 
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+
   app.get("/", (req, res) => {
     const template = homePageTemplateName || "home";
     const userinfo = req.userContext && req.userContext.userinfo;
@@ -89,6 +98,10 @@ module.exports = function SampleWebServer(
     });
   });
 
+  app.get("/verify-webauthn", (req, res) => {
+    res.render("verify-webauthn");
+  });
+  
   app.get("/profile", oidc.ensureAuthenticated(), (req, res) => {
     // Convert the userinfo object into an attribute array, for rendering with mustache
     const userinfo = req.userContext && req.userContext.userinfo;
@@ -115,7 +128,9 @@ module.exports = function SampleWebServer(
         user
           .listSupportedFactors()
           .each((factor) => {
-            if (factorutil.isSupportedFactor(factor.factorType, factor.provider)) {
+            if (
+              factorutil.isSupportedFactor(factor.factorType, factor.provider)
+            ) {
               let type = factorutil.getType(factor.factorType, factor.provider);
 
               // console.log(`found supported factor ${factor.factorType}`);
@@ -124,26 +139,33 @@ module.exports = function SampleWebServer(
                 webauthnFactors["status"] = factor.status;
                 // webauthnFactors["isActive"] = true;
                 webauthnFactors["enableSetup"] = true; // todo: only true if < 5 authenticators
-                webauthnFactors["name"] = factorutil.getName(factor.factorType, factor.provider);
+                webauthnFactors["name"] = factorutil.getName(
+                  factor.factorType,
+                  factor.provider
+                );
                 webauthnFactors["setupUrl"] = factorutil.getSetupLink(
-                  factor.factorType, factor.provider
+                  factor.factorType,
+                  factor.provider
                 );
               } else {
-                
-                if (type === 'ov' && factors[type]) {
-                  console.log('found existing ov entry');
-                  console.log(`existing enableSetup: ${factors[type].enableSetup}`);
+                if (type === "ov" && factors[type]) {
+                  console.log("found existing ov entry");
+                  console.log(
+                    `existing enableSetup: ${factors[type].enableSetup}`
+                  );
                   console.log(`factor.status ${factor.status}`);
 
                   // OV setup should only be enabled if both totp and push are NOT_SETUP
-                  if (factor.status === 'NOT_SETUP' && factors[type].status === 'NOT_SETUP') {
-                    console.log('enable setup');
+                  if (
+                    factor.status === "NOT_SETUP" &&
+                    factors[type].status === "NOT_SETUP"
+                  ) {
+                    console.log("enable setup");
                     factors[type].enableSetup = true;
                   } else {
-                    console.log('disable setup');
+                    console.log("disable setup");
                     factors[type].enableSetup = false;
                   }
-                  
                 } else {
                   factors[type] = {
                     factorType: type,
@@ -151,11 +173,16 @@ module.exports = function SampleWebServer(
                     status: factor.status,
                     // isActive: factor.status === "ACTIVE",
                     enableSetup: factor.status === "NOT_SETUP",
-                    name: factorutil.getName(factor.factorType, factor.provider),
-                    setupUrl: factorutil.getSetupLink(factor.factorType, factor.provider),
+                    name: factorutil.getName(
+                      factor.factorType,
+                      factor.provider
+                    ),
+                    setupUrl: factorutil.getSetupLink(
+                      factor.factorType,
+                      factor.provider
+                    ),
                   };
                 }
-                
               }
             }
           })
@@ -164,10 +191,16 @@ module.exports = function SampleWebServer(
               .listFactors()
               .each((factor) => {
                 if (
-                  factorutil.isSupportedFactor(factor.factorType, factor.provider) &&
+                  factorutil.isSupportedFactor(
+                    factor.factorType,
+                    factor.provider
+                  ) &&
                   factor.status === "ACTIVE"
                 ) {
-                  let type = factorutil.getType(factor.factorType, factor.provider);
+                  let type = factorutil.getType(
+                    factor.factorType,
+                    factor.provider
+                  );
                   // console.log(`found factor ${factor.factorType}`);
                   if (type == "webauthn") {
                     webauthnFactors["factors"].push({
@@ -175,10 +208,16 @@ module.exports = function SampleWebServer(
                       name: factor.profile.authenticatorName,
                     });
                   } else {
-
-                    if (factors[type].factorid && type === 'ov' && factor.factorType === 'token:software:totp' && factor.provider === 'OKTA') {
+                    if (
+                      factors[type].factorid &&
+                      type === "ov" &&
+                      factor.factorType === "token:software:totp" &&
+                      factor.provider === "OKTA"
+                    ) {
                       let factoridOld = factors[type].factorid;
-                      console.log(`Don't overwrite existing factorid ${factoridOld} with ${factor.id}`);
+                      console.log(
+                        `Don't overwrite existing factorid ${factoridOld} with ${factor.id}`
+                      );
                     } else {
                       factors[type]["factorid"] = factor.id;
                     }
@@ -228,34 +267,46 @@ module.exports = function SampleWebServer(
           .listSupportedFactors()
           .each((factor) => {
             // if (factorutil.factorTypes.includes(factor.factorType)) {
-            if (factorutil.isSupportedFactor(factor.factorType, factor.provider)) {
+            if (
+              factorutil.isSupportedFactor(factor.factorType, factor.provider)
+            ) {
               let type = factorutil.getType(factor.factorType, factor.provider);
-              console.log(`Found supported factor ${type} ${factor.factorType} ${factor.provider}`);
+              console.log(
+                `Found supported factor ${type} ${factor.factorType} ${factor.provider}`
+              );
               if (type == "webauthn") {
                 webauthnFactors["factorType"] = factor.factorType;
                 webauthnFactors["provider"] = factor.provider;
                 webauthnFactors["status"] = factor.status;
                 // webauthnFactors["isActive"] = true;
                 webauthnFactors["enableSetup"] = true; // todo: what is the max number of authn factors allowed?
-                webauthnFactors["name"] = factorutil.getName(factor.factorType, factor.provider);
-                webauthnFactors["iconUrl"] = factorutil.getIconUrl(factor.factorType, factor.provider);
-                
+                webauthnFactors["name"] = factorutil.getName(
+                  factor.factorType,
+                  factor.provider
+                );
+                webauthnFactors["iconUrl"] = factorutil.getIconUrl(
+                  factor.factorType,
+                  factor.provider
+                );
               } else {
-                
-                if (type === 'ov' && factors[type]) {
-                  console.log('found existing ov entry');
-                  console.log(`existing enableSetup: ${factors[type].enableSetup}`);
+                if (type === "ov" && factors[type]) {
+                  console.log("found existing ov entry");
+                  console.log(
+                    `existing enableSetup: ${factors[type].enableSetup}`
+                  );
                   console.log(`factor.status ${factor.status}`);
-                  
+
                   // OV setup should only be enabled if both totp and push are NOT_SETUP
-                  if (factor.status === 'NOT_SETUP' && factors[type].status === 'NOT_SETUP') {
-                    console.log('enable setup');
+                  if (
+                    factor.status === "NOT_SETUP" &&
+                    factors[type].status === "NOT_SETUP"
+                  ) {
+                    console.log("enable setup");
                     factors[type].enableSetup = true;
                   } else {
-                    console.log('disable setup');
+                    console.log("disable setup");
                     factors[type].enableSetup = false;
                   }
-                  
                 } else {
                   factors[type] = {
                     factorType: type,
@@ -263,11 +314,16 @@ module.exports = function SampleWebServer(
                     status: factor.status,
                     // isActive: factor.status === "ACTIVE",
                     enableSetup: factor.status === "NOT_SETUP",
-                    name: factorutil.getName(factor.factorType, factor.provider),
-                    iconUrl: factorutil.getIconUrl(factor.factorType, factor.provider)
+                    name: factorutil.getName(
+                      factor.factorType,
+                      factor.provider
+                    ),
+                    iconUrl: factorutil.getIconUrl(
+                      factor.factorType,
+                      factor.provider
+                    ),
                   };
                 }
-                
               }
             }
           })
@@ -276,11 +332,19 @@ module.exports = function SampleWebServer(
               .listFactors()
               .each((factor) => {
                 if (
-                  factorutil.isSupportedFactor(factor.factorType, factor.provider) &&
+                  factorutil.isSupportedFactor(
+                    factor.factorType,
+                    factor.provider
+                  ) &&
                   factor.status === "ACTIVE"
                 ) {
-                  let type = factorutil.getType(factor.factorType, factor.provider);
-                  console.log(`Found factor ${type} ${factor.factorType} ${factor.provider}`);
+                  let type = factorutil.getType(
+                    factor.factorType,
+                    factor.provider
+                  );
+                  console.log(
+                    `Found factor ${type} ${factor.factorType} ${factor.provider}`
+                  );
 
                   if (type == "webauthn") {
                     webauthnFactors["factors"].push({
@@ -288,9 +352,16 @@ module.exports = function SampleWebServer(
                       name: factor.profile.authenticatorName,
                     });
                   } else {
-                    if (factors[type].factorid && type === 'ov' && factor.factorType === 'token:software:totp' && factor.provider === 'OKTA') {
+                    if (
+                      factors[type].factorid &&
+                      type === "ov" &&
+                      factor.factorType === "token:software:totp" &&
+                      factor.provider === "OKTA"
+                    ) {
                       let factoridOld = factors[type].factorid;
-                      console.log(`Don't overwrite existing factorid ${factoridOld} with ${factor.id}`);
+                      console.log(
+                        `Don't overwrite existing factorid ${factoridOld} with ${factor.id}`
+                      );
                     } else {
                       factors[type]["factorid"] = factor.id;
                     }
@@ -311,18 +382,19 @@ module.exports = function SampleWebServer(
                 // console.log("webauthnFactors: ");
                 // console.log(webauthnFactors);
                 let multiFactorArray = [];
-              
-                if (webauthnFactors.status === 'ACTIVE' || webauthnFactors.status === 'NOT_SETUP') {
-                  multiFactorArray.push(webauthnFactors)
+
+                if (
+                  webauthnFactors.status === "ACTIVE" ||
+                  webauthnFactors.status === "NOT_SETUP"
+                ) {
+                  multiFactorArray.push(webauthnFactors);
                 }
-              
+
                 let questions = factorutil.questions;
 
                 res.render("mfa2", {
                   isLoggedIn: !!userinfo,
                   userinfo: userinfo,
-                  //maskEmail: factorutil.maskEmail(userinfo.email),
-                  // href: "mfa2",
                   factorArray,
                   multiFactorArray,
                   questions,
@@ -335,24 +407,66 @@ module.exports = function SampleWebServer(
       });
   });
 
+  app.get("/stepup-iframe", oidc.ensureAuthenticated(), (req, res) => {
+    // Convert the userinfo object into an attribute array, for rendering with mustache
+    const userinfo = req.userContext && req.userContext.userinfo;
+    const attributes = Object.entries(userinfo);
+
+    let stepupUrl = process.env.STEPUP_URL;
+    console.log(stepupUrl);
+
+    res.render("stepup-iframe", {
+      isLoggedIn: !!userinfo,
+      userinfo: userinfo,
+      attributes,
+      stepupUrl: stepupUrl,
+    });
+  });
+
+  app.post("/stepup-callback", (req, res) => {
+    // Convert the userinfo object into an attribute array, for rendering with mustache
+    // const userinfo = req.userContext && req.userContext.userinfo;
+    // const attributes = Object.entries(userinfo);
+
+    console.log("post stepup-callback");
+    // console.log(req.body);
+
+    // extract id_token from body
+
+    let idTokenStr = req.body.id_token;
+    let idToken = JSON.parse(atob(idTokenStr.split(".")[1]));
+    console.log(idToken);
+
+    // todo: make an introspect call to check status of id token, add that to stepup-callback
+
+    res.render("stepup-callback", { active: true });
+  });
+
+  app.get("/stepup-api", oidc.ensureAuthenticated(), (req, res) => {
+    // Convert the userinfo object into an attribute array, for rendering with mustache
+    const userinfo = req.userContext && req.userContext.userinfo;
+    const attributes = Object.entries(userinfo);
+
+    res.render("stepup-api", {
+      isLoggedIn: !!userinfo,
+      userinfo: userinfo,
+      attributes,
+    });
+  });
+
   app.get("/test", oidc.ensureAuthenticated(), (req, res) => {
     // Convert the userinfo object into an attribute array, for rendering with mustache
     const userinfo = req.userContext && req.userContext.userinfo;
     const attributes = Object.entries(userinfo);
     let questions = factorutil.questions;
-    
+
     res.render("test", {
       isLoggedIn: !!userinfo,
       userinfo: userinfo,
       attributes,
-      questions
+      questions,
     });
   });
-
-  
-  
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
 
   app.post(
     "/api/deleteFactor/:factorid",
@@ -570,6 +684,58 @@ module.exports = function SampleWebServer(
     }
   );
 
+  app.get("/api/listActiveFactors", oidc.ensureAuthenticated(), (req, res) => {
+    console.log("get listActiveFactors");
+    const userinfo = req.userContext && req.userContext.userinfo;
+
+    let factors = [];
+
+    auth.client
+      .getUser(userinfo.sub)
+      .then((user) => {
+        user
+          .listFactors()
+          .each((factor) => {
+            if (factorutil.isSupportedFactor(factor.factorType, factor.provider) && factor.status === "ACTIVE") {
+              let type = factorutil.getType(factor.factorType, factor.provider);
+              console.log(`Found active factor: ${factor.factorType} ${factor.provider}`);
+              factors.push(factor);
+            }
+          })
+          .then(() => {
+            console.log("factors: ");
+            console.log(factors);
+          
+            return res.status(200).send(factors);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(err.status).send(factorutil.getErrorMessage(err));
+      });
+  });
+
+  app.get(
+    "/api/factorTransactionStatus/:factorid/:transactionid",
+    oidc.ensureAuthenticated(),
+    (req, res) => {
+      const userinfo = req.userContext && req.userContext.userinfo;
+
+      console.log("get factorTransactionStatus");
+
+      auth.client
+        .getFactorTransactionStatus(userinfo.sub, req.params.factorid, req.params.transactionid)
+        .then((factorResult) => {
+          console.log("getFactorTransactionStatus success");
+          console.log(factorResult);
+          return res.send(factorResult);
+        })
+        .catch((err) => {
+          return res.status(err.status).send(factorutil.getErrorMessage(err));
+        });
+    }
+  );
+  
   oidc.on("ready", () => {
     // eslint-disable-next-line no-console
     app.listen(sampleConfig.port, () =>
