@@ -12,6 +12,16 @@ $(document).ready(function () {
 });
 
 var messageDelay = 5000;
+var verifyResponse = {};
+var script_to_run;
+
+
+function setVerifyResponse(response) {
+  console.log('setVerifyResponse');
+  verifyResponse = response;
+  
+  $("#popup-stepup-iframe").modal("hide");
+}
 
 function hideMessages() {
   console.log('hideMessages');
@@ -19,6 +29,47 @@ function hideMessages() {
   $("#transfer_success_msg").fadeOut();
   $("#transfer_error_msg").fadeOut();
 }
+
+
+function showStepUp(functioncall) {
+  console.log("showStepUp");
+  console.log(functioncall);
+  
+  verifyResponse = {};
+  
+  script_to_run = functioncall;
+  console.log(functioncall);
+  
+  let stepupUrl = $('#stepupUrl').val();
+  console.log(stepupUrl);
+  
+  $('#iframe_stepup').attr('src', stepupUrl); 
+  $("#popup-stepup-iframe").modal({ onDeny: functioncall, onHide: functioncall }).modal('show');
+}
+
+// function onHide() { 
+//   console.log('onHide');
+//   denyTransfer();
+//   return true;
+// }
+
+
+// function onDeny() { 
+//   console.log('onDeny');
+//   denyTransfer();
+//   return true;
+// }
+
+// function completedmfa(test_token) {
+//   console.log("completedmfa");
+//   console.log(test_token);
+  
+//   script_to_run(test_token);
+//   $("#popup-stepup-iframe").modal("hide");
+
+// }
+
+
 
 function validateTransfer() {
   console.log('validateTransfer');
@@ -45,7 +96,6 @@ function doTransfer() {
   $("#transfer_success_msg").text(msg);
   
   setTimeout('hideMessages()', messageDelay);
-  
 }
 
 function denyTransfer() {
@@ -56,11 +106,11 @@ function denyTransfer() {
   setTimeout('hideMessages()', messageDelay);
 }
 
-function runmyscript(mfachecked) {
+function runmyscript() {
   console.log('runmyscript');
-  console.log(mfachecked);
+  console.log(verifyResponse);
   
-  if (mfachecked.active)
+  if (verifyResponse.active)
   {
     doTransfer();
   }
@@ -69,43 +119,4 @@ function runmyscript(mfachecked) {
     denyTransfer();
   }
   
-}
-
-
-
-var script_to_run;
-function showStepUp(functioncall) {
-  console.log("showStepUp");
-  console.log(functioncall);
-  
-  script_to_run = functioncall;
-  console.log(functioncall);
-  
-  let stepupUrl = $('#stepupUrl').val();
-  console.log(stepupUrl);
-  
-  $('#iframe_stepup').attr('src', stepupUrl); 
-  $("#popup-stepup-iframe").modal({ onDeny: onDeny, onHide: onHide }).modal('show');
-}
-
-function onHide() { 
-  console.log('onHide');
-  denyTransfer();
-  return true;
-}
-
-
-function onDeny() { 
-  console.log('onDeny');
-  denyTransfer();
-  return true;
-}
-
-function completedmfa(test_token) {
-  console.log("completedmfa");
-  console.log(test_token);
-  
-  script_to_run(test_token);
-  $("#popup-stepup-iframe").modal("hide");
-
 }
