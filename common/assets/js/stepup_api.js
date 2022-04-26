@@ -1,6 +1,8 @@
 $(document).ready(function () {
+  console.log("ready");
+
   // initialize semantic dropdowns
-  $(".ui.dropdown").dropdown();
+  // $(".ui.dropdown").dropdown();
 
   $("#transfer_success_msg").hide();
   $("#transfer_error_msg").hide();
@@ -22,6 +24,143 @@ const pollDelayPush = 10000;
 
 var listedFactors;
 var verifyResponse;
+
+function showError(err) {
+  console.log("showError");
+
+  console.error(err);
+  console.error(err.responseText);
+
+  let errmsg = err;
+  if (err.responseText) {
+    errmsg = err.responseText;
+  }
+
+  $("#error_msg_stepup").text(errmsg);
+  $("#error_msg_stepup").show();
+}
+
+function onFactorDropdownChange(value, text) {
+  console.log("onFactorDropdownChange");
+  console.log(value);
+
+  if (!value) {
+    return;
+  }
+
+  hideStepupMessages();
+
+  // set image
+  // defined in factorutil.js
+  let iconUrl = getIconUrl(value);
+  $("#img_factor_stepup").attr("src", iconUrl);
+  let factorName = getName(value);
+  $("#name_factor_stepup").text(factorName);
+
+  // show factor ui
+  switch (value) {
+    case "question":
+      showQuestionStepup();
+      break;
+    case "sms":
+      showSMSStepup();
+      break;
+    case "call":
+      showCallStepup();
+      break;
+    case "email":
+      showEmailStepup();
+      break;
+    case "ov":
+      showOVStepup();
+      break;
+    case "google":
+      showGoogleStepup();
+      break;
+    case "webauthn":
+      showWebauthnStepup();
+      break;
+  }
+}
+
+function getDropdownItem(factor) {
+  console.log("getDropdownItem");
+
+  let item = `<div class="item" data-value="${factor.type}">`;
+  item += `<img class="ui avatar image" src="${factor.iconUrl}" />`;
+  item += `${factor.name}`;
+  item += `</div>`;
+  
+  return item;
+}
+
+function initializeFactorDropdown() {
+  console.log("initializeFactorDropdown");
+
+  let factors = getFactorsByType(listedFactors);
+  $("#factor_dropdown").dropdown('clear');
+  
+  factors
+    .forEach((o) => {
+      let item = getDropdownItem(o);
+      console.log(item);
+      $("#factor_dropdown .menu").append(item);
+    });
+
+  let config = {
+    onChange: onFactorDropdownChange,
+  };
+
+  $("#factor_dropdown").dropdown(config);
+  $("#factor_dropdown").dropdown('set selected', factors[0].type)
+}
+
+function initializeStepup() {
+  console.log("initializeStepup");
+
+  hideStepupMessages();
+
+  verifyResponse = {};
+  listedFactors = {};
+}
+
+// todo: add parameter for factor assurance level
+function showStepUp(functioncall) {
+  console.log("showStepUp");
+  console.log(functioncall);
+
+  initializeStepup();
+
+  // call listFactors
+  // initialize modal with factors list
+
+  $.ajax({
+    url: "/api/listActiveFactors",
+    method: "GET",
+  })
+    .done(function (factors) {
+      console.log("success listActiveFactors");
+      console.log(factors);
+
+      // store factors in global
+      // todo: filter out factors based on assurance level
+      listedFactors = factors;
+    
+      // init factors list into dropdown for
+      initializeFactorDropdown();
+
+      $("#popup-stepup-api")
+        .modal({
+          onDeny: functioncall,
+          onApprove: functioncall,
+          onHide: functioncall,
+        })
+        .modal("show");
+    })
+    .fail(function (err, textStatus) {
+      showError(err);
+    });
+}
 
 function hideAllStepup() {
   console.log("hideAllStepup");
@@ -47,65 +186,14 @@ function hideStepupMessages() {
   $("#warning_msg_stepup").hide();
 }
 
-function checkTransfer() {
-  console.log("checkTransfer");
-
-  let amount = $("#amount").val();
-  console.log(amount);
-
-  // todo: have two tiers of step up
-
-  if (amount < 1000) {
-    console.log("don't do step up mfa");
-    doTransfer();
-  } else {
-    console.log("do step up mfa");
-    showStepUp(runmyscript);
-  }
-}
-
-function doTransfer() {
-  console.log("doTransfer");
-
-  let amount = $("#amount").val();
-  let msg =
-    "$" + amount + " transfered to: " + $("#to_account").dropdown("get text");
-  $("#transfer_success_msg").fadeIn();
-  $("#transfer_success_msg").text(msg);
-
-  setTimeout("hideMessages()", messageDelay);
-}
-
-function denyTransfer() {
-  console.log("denyTransfer");
-  let msg = "Unable to validate Step up MFA. Transfer denied.";
-  $("#transfer_error_msg").fadeIn();
-  $("#transfer_error_msg").text(msg);
-
-  setTimeout("hideMessages()", messageDelay);
-}
-
-function runmyscript() {
-  console.log("runmyscript");
-  console.log(verifyResponse);
-
-  if (verifyResponse.factorResult === "SUCCESS") {
-    doTransfer();
-  } else {
-    denyTransfer();
-  }
-}
-
 function mfaValidated(response) {
   console.log("mfaValidated");
 
-  $("#error_msg_stepup").fadeOut("slow");
-  $("#warning_msg_stepup").fadeOut("slow");
-
+  hideStepupMessages();
+  
   verifyResponse = response;
   $("#popup-stepup-api").modal("hide");
 }
-
 
 // Security Question
 
@@ -113,7 +201,7 @@ function showQuestionStepup() {
   console.log("showQuestionStepup");
 
   hideAllStepup();
-  $("#question_answer").text('');
+  $("#question_answer").text("");
   $("#question_stepup").fadeIn("slow");
 
   let factor = listedFactors.find((o) => o.factorType === "question");
@@ -163,9 +251,8 @@ function verifyQuestion() {
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
-
 
 // SMS
 
@@ -173,8 +260,8 @@ function showSMSStepup() {
   console.log("showSMSStepup");
 
   hideAllStepup();
-  $("#code_sms").text('');
-  
+  $("#code_sms").text("");
+
   $("#sms_stepup").fadeIn("slow");
 
   let factor = listedFactors.find((o) => o.factorType === "sms");
@@ -234,7 +321,7 @@ function challengeSMS() {
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
 
 function verifySMS() {
@@ -270,9 +357,8 @@ function verifySMS() {
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
-
 
 // Voice Call
 
@@ -280,7 +366,7 @@ function showCallStepup() {
   console.log("showCallStepup");
 
   hideAllStepup();
-  $("#code_call").text('');
+  $("#code_call").text("");
 
   $("#call_stepup").fadeIn("slow");
   $("#call_verify_ui").hide();
@@ -342,7 +428,7 @@ function challengeCall() {
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
 
 function verifyCall() {
@@ -378,17 +464,16 @@ function verifyCall() {
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
-
 
 // Email
 function showEmailStepup() {
   console.log("showEmailStepup");
 
   hideAllStepup();
-  $("#code_email").text('');
-  
+  $("#code_email").text("");
+
   $("#email_stepup").fadeIn("slow");
 
   $("#email_verify_ui").hide();
@@ -448,7 +533,7 @@ function challengeEmail() {
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
 
 function verifyEmail() {
@@ -481,12 +566,11 @@ function verifyEmail() {
       console.log(response);
 
       mfaValidated(response);
-    })  
+    })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
-} 
-
+    });
+}
 
 // Okta Verify
 
@@ -495,8 +579,8 @@ function showOVStepup() {
 
   hideAllStepup();
 
-  $("#ov_code").text('');
-  
+  $("#ov_code").text("");
+
   let factorOVTotp = listedFactors.find(
     (o) => o.factorType === "token:software:totp" && o.provider === "OKTA"
   );
@@ -505,39 +589,39 @@ function showOVStepup() {
     (o) => o.factorType === "push" && o.provider === "OKTA"
   );
 
-  if (factorOVPush && factorOVPush.status == 'ACTIVE') {
+  if (factorOVPush && factorOVPush.status == "ACTIVE") {
     console.log(factorOVPush.id);
     console.log(factorOVPush.profile.name);
-    
-    $("#name_factor_stepup").text(`${getName('ov')} (${factorOVPush.profile.name})`);
-        
+
+    $("#name_factor_stepup").text(
+      `${getName("ov")} (${factorOVPush.profile.name})`
+    );
+
     $("#ov_push").show();
     $("#ov_enter_code_link").show();
     $("#ov_code_message").hide();
     $("#ov_enter_code").hide();
-
   } else {
-      console.log(factorOVTotp.id);
-    
-      $("#ov_push").hide();
-      $("#ov_code_message").show();
-      $("#ov_code").show();
+    console.log(factorOVTotp.id);
+
+    $("#ov_push").hide();
+    $("#ov_code_message").show();
+    $("#ov_code").show();
   }
-  
+
   $("#ov_stepup").fadeIn("slow");
-  
 }
 
 function enableSendPush() {
   console.log("enableSendPush");
-  
+
   $("#send_ov_push").prop("value", "Send push");
   $("#send_ov_push").prop("disabled", false);
 }
 
 function disableSendPush() {
   console.log("disableSendPush");
-  
+
   $("#send_ov_push").prop("value", "Push sent!");
   $("#send_ov_push").prop("disabled", true);
 }
@@ -552,7 +636,7 @@ function challengeOVPush() {
 
   $("#warning_msg_stepup").hide();
   disableSendPush();
-  
+
   $.ajax({
     url: `/api/verifyFactor/${factor.id}`,
     method: "POST",
@@ -563,19 +647,18 @@ function challengeOVPush() {
       console.log(response.factorResult);
       let pollLink = response._links.poll.href;
       console.log(pollLink);
-    
-      let transactionid = pollLink.substring(pollLink.lastIndexOf('/') + 1);
+
+      let transactionid = pollLink.substring(pollLink.lastIndexOf("/") + 1);
       console.log(transactionid);
-    
+
       $("#error_msg_stepup").fadeOut("slow");
 
       // start polling
       setTimeout(pollOVPush(factor.id, transactionid), pollDelayPush);
-    
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
 
 function pollOVPush(factorid, transactionid) {
@@ -608,22 +691,21 @@ function pollOVPush(factorid, transactionid) {
         case "TIMEOUT":
           $("#error_msg_stepup").text(`Push request ${response.factorResult}`);
           $("#error_msg_stepup").show();
-          
+
           enableSendPush();
           break;
       }
     })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
 
 function showOVCode() {
   console.log("showOVCode");
-  
+
   $("#ov_enter_code_link").hide();
   $("#ov_enter_code").fadeIn("slow");
-  
 }
 
 function verifyOVCode() {
@@ -658,11 +740,10 @@ function verifyOVCode() {
       console.log(response);
 
       mfaValidated(response);
-    })  
+    })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
-  
+    });
 }
 
 // Google Authenticator
@@ -678,19 +759,19 @@ function showGoogleStepup() {
   );
 
   console.log(factor.id);
-  
+
   initializeGoogleStepup();
 }
 
 function initializeGoogleStepup() {
   console.log("showGoogleStepup");
-  
-  $("#code_google").text('');
+
+  $("#code_google").text("");
 }
 
 function verifyGoogle() {
   console.log("verifyGoogle");
-  
+
   let factor = listedFactors.find(
     (o) => o.factorType === "token:software:totp" && o.provider === "GOOGLE"
   );
@@ -720,12 +801,11 @@ function verifyGoogle() {
       console.log(response);
 
       mfaValidated(response);
-    })  
+    })
     .fail(function (err, textStatus) {
       showError(err);
-    });  
+    });
 }
-
 
 // Webauthn
 
@@ -737,7 +817,7 @@ function showWebauthnStepup() {
   $("#webauthn_stepup").fadeIn("slow");
 
   // let factor = listedFactors.find((o) => o.factorType === "webauthn");
-  
+
   challengeWebauthn();
 }
 
@@ -779,13 +859,13 @@ fn.strToBin = function (str) {
 function challengeWebauthn() {
   console.log("challengeWebauthn");
 
-  let factors = listedFactors.filter(o => o.factorType === "webauthn");
+  let factors = listedFactors.filter((o) => o.factorType === "webauthn");
   console.log(factors);
   let factorid = factors[0].id;
 
   $("#error_msg_stepup").hide();
   $("#warning_msg_stepup").hide();
-  
+
   $("#retry_webauthn").hide();
 
   $.ajax({
@@ -795,13 +875,15 @@ function challengeWebauthn() {
     .then(function (response) {
       console.log("challengeWebauthn success!");
       console.log(response);
-    
+
       let challenge = response._embedded.challenge.challenge;
       console.log(challenge);
-    
-      let factors = response._embedded.enrolledFactors.filter(o => o.factorType === "webauthn");
-      let credIds = factors.map(o => o.profile.credentialId);
-    
+
+      let factors = response._embedded.enrolledFactors.filter(
+        (o) => o.factorType === "webauthn"
+      );
+      let credIds = factors.map((o) => o.profile.credentialId);
+
       let allowCredentials = [];
       credIds.forEach((cred) => {
         if (cred) {
@@ -823,174 +905,101 @@ function challengeWebauthn() {
         userVerification: "preferred",
         //extensions: {},
       };
-    
+
       console.log(options);
-      return options;    
-    
+      return options;
     })
-    .then(options => navigator.credentials.get({publicKey: options}))
-    .then(function(assertion) {
+    .then((options) => navigator.credentials.get({ publicKey: options }))
+    .then(function (assertion) {
       console.log(assertion);
-    
+
       // Get the client data, authenticator data, and signature data from callback result, convert from binary to string
 
       let clientData = fn.binToStr(assertion.response.clientDataJSON);
-      let authenticatorData = fn.binToStr(
-        assertion.response.authenticatorData
-      );
+      let authenticatorData = fn.binToStr(assertion.response.authenticatorData);
       let signatureData = fn.binToStr(assertion.response.signature);
-    
+
       console.log(clientData);
       console.log(authenticatorData);
       console.log(signatureData);
-    
-      // todo: verify webauthn    
-    
+
+      // todo: verify webauthn
+
       let body = {
         clientData: clientData,
         authenticatorData: authenticatorData,
-        signatureData: signatureData
+        signatureData: signatureData,
       };
-    
+
       console.log(body);
       return body;
     })
-    .then(body => $.ajax({
-      url: `/api/verifyFactor/${factorid}`,
-      method: "POST",
-      data: body,
-    }))
-    .then(response => {
+    .then((body) =>
+      $.ajax({
+        url: `/api/verifyFactor/${factorid}`,
+        method: "POST",
+        data: body,
+      })
+    )
+    .then((response) => {
       console.log("verify webauthn success!");
       console.log(response);
-    
+
       mfaValidated(response);
     })
     .fail(function (err, textStatus) {
       showError(err);
-      
+
       $("#retry_webauthn").show();
-    });  
-}
-
-function showError(err) {
-  console.log('showError');
-
-  console.error(err);
-  console.error(err.responseText);
-
-  let errmsg = err;
-  if (err.responseText) {
-    errmsg = err.responseText;
-  }
-
-  $("#error_msg_stepup").text(errmsg);
-  $("#error_msg_stepup").show();
+    });
 }
 
 
-function onFactorDropdownChange(value, text) {
-  console.log("onFactorDropdownChange");
-  console.log(value);
+function checkTransfer() {
+  console.log("checkTransfer");
 
-  if (!value) {
-    return;
-  }
+  let amount = $("#amount").val();
+  console.log(amount);
 
-  hideStepupMessages();
-  
-  // set image
-  // defined in factorutil.js
-  let iconUrl = getIconUrl(value);
-  $("#img_factor_stepup").attr("src", iconUrl);
-  let factorName = getName(value);
-  $("#name_factor_stepup").text(factorName);
+  // todo: have two tiers of step up?
 
-  // show factor ui
-  switch (value) {
-    case "question":
-      showQuestionStepup();
-      break;
-    case "sms":
-      showSMSStepup();
-      break;
-    case "call":
-      showCallStepup();
-      break;
-    case "email":
-      showEmailStepup();
-      break;
-    case "ov":
-      showOVStepup();
-      break;
-    case "google":
-      showGoogleStepup();
-      break;
-    case "webauthn":
-      showWebauthnStepup();
-      break;
+  if (amount < 1000) {
+    console.log("don't do step up mfa");
+    doTransfer();
+  } else {
+    console.log("do step up mfa");
+    showStepUp(runmyscript);
   }
 }
 
-function initializeFactorDropdown() {
-  console.log("initializeFactorDropdown");
+function doTransfer() {
+  console.log("doTransfer");
 
-  // defined in factorutil.js
-  let items = getDropdownItems(listedFactors);
-  console.log(items);
+  let amount = $("#amount").val();
+  let msg =
+    "$" + amount + " transfered to: " + $("#to_account").dropdown("get text");
+  $("#transfer_success_msg").fadeIn();
+  $("#transfer_success_msg").text(msg);
 
-  // select first item
-  // items[0].selected = true;
-
-  let config = {
-    values: items,
-    onChange: onFactorDropdownChange,
-  };
-
-  $("#factor_dropdown").dropdown(config);
+  setTimeout("hideMessages()", messageDelay);
 }
 
-function initializeStepup() {
-  console.log("initializeStepup");
+function denyTransfer() {
+  console.log("denyTransfer");
+  let msg = "Unable to validate Step up MFA. Transfer denied.";
+  $("#transfer_error_msg").fadeIn();
+  $("#transfer_error_msg").text(msg);
 
-  hideStepupMessages();
-
-  verifyResponse = {};
-  listedFactors = {};
+  setTimeout("hideMessages()", messageDelay);
 }
 
-function showStepUp(functioncall) {
-  console.log("showStepUp");
-  console.log(functioncall);
+function runmyscript() {
+  console.log("runmyscript");
+  console.log(verifyResponse);
 
-  initializeStepup();
-
-  // call listFactors
-  // initialize modal with factors list
-
-  $.ajax({
-    url: "/api/listActiveFactors",
-    method: "GET",
-  })
-    .done(function (factors) {
-      console.log("success listActiveFactors");
-      console.log(factors);
-
-      // store factors in global
-      listedFactors = factors;
-
-      // init factors list into dropdown for in popup stepup
-      initializeFactorDropdown();
-
-      $("#popup-stepup-api")
-        .modal({
-          onDeny: functioncall,
-          onApprove: functioncall,
-          onHide: functioncall,
-        })
-        .modal("show");
-    })
-    .fail(function (err, textStatus) {
-      showError(err);
-    });  
+  if (verifyResponse.factorResult === "SUCCESS") {
+    doTransfer();
+  } else {
+    denyTransfer();
+  }
 }
