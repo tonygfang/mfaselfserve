@@ -1,45 +1,44 @@
 // add factorType_provider for any supported factors
 const factorTypeMap = {
+  question_OKTA: 'question',
   sms_OKTA: 'sms',
   call_OKTA: 'call',
-  question_OKTA: 'question',
+  email_OKTA: 'email',
   push_OKTA: 'ov',
   'token:software:totp_OKTA': 'ov',
-  email_OKTA: 'email',
+  'token:software:totp_GOOGLE': 'google',
   webauthn_FIDO: 'webauthn',
-  'token:software:totp_GOOGLE': 'google'
 };
 
-
 const factorAttrs = {
+  question: {
+    name: "Security Question",
+    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/question_38x38.png?v=1648214852200",
+  },
   sms: {
     name: "SMS",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/sms_38x38.png?v=1648214837545"
+    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/sms_38x38.png?v=1648214837545",
   },
   call: {
     name: "Voice Call",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/voicecall_38x38.png?v=1648214837268"
-  },
-  question: {
-    name: "Security Question",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/question_38x38.png?v=1648214852200"
-  },
-  ov: {
-    name: "Okta Verify",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/oktaVerify_38x38.png?v=1648214837364"
+    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/voicecall_38x38.png?v=1648214837268",
   },
   email: {
     name: "Email",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/email_38x38.png?v=1648214837403"
+    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/email_38x38.png?v=1648214837403",
   },
-  webauthn: {
-    name: "Security Key or Biometric Authenticator",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/webauthn_38x38.png?v=1648214837268"
+  ov: {
+    name: "Okta Verify",
+    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/oktaVerify_38x38.png?v=1648214837364",
   },
   google: {
     name: "Google Authenticator",
     iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/googleAuth_38x38.png?v=1648214837511"
   },  
+  webauthn: {
+    name: "Security Key or Biometric Authenticator",
+    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/webauthn_38x38.png?v=1648214837268"
+  },
 };
 
 
@@ -77,6 +76,27 @@ function getDropdownItems(factors) {
   
   // return values list
   return Object.values(items);
+}
+
+function getFactorsByType(factors) {
+  // add supported factors to object with type as key
+  // this will avoid dupe entries (OV, webauthn)
+  let items = {};
+  factors.forEach(factor => {
+    if (isSupportedFactor(factor.factorType, factor.provider)) {
+      let type = getType(factor.factorType, factor.provider);
+      items[type] = { 
+        type: type,
+        name: getName(type), 
+        iconUrl: getIconUrl(type) 
+      };
+    }
+  });
+  
+  // return values list
+  return Object.values(items);
+  
+  
 }
 
 function getIconUrl(type) {
