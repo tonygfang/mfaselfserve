@@ -1,4 +1,4 @@
- 
+
 const factorMap = {
   sms_OKTA: {
     factorType: "sms",

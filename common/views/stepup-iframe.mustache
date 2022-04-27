@@ -22,10 +22,26 @@
           <h2 class="ui dividing header" data-se="overview-doc-header">
             My Step Up MFA testing
           </h2>
-          <p>Hello, {{userinfo.name}}. Testing!!!
+          <p>Hello, {{userinfo.name}}.
           </p>
-          <p>This step up uses the Okta-hosted Sign In Widget embedded in an iFrame. Transfers > $1000 will trigger a step up.</p>
+          <p>This step up uses the Okta-hosted Sign In Widget embedded in an iFrame.</p> 
+          <p>Transfers > $1000 will trigger a step up.</p>
           
+          Advantages:
+          <div class="ui bulleted list">
+            <div class="item">Easier to implement</div>
+            <div class="item">Do not need to make Okta API calls</div>
+            <div class="item">Do not need to create MFA UI for MFA challenge/verification</div>
+          </div>
+          
+          Disadvantages:
+          <div class="ui bulleted list">
+            <div class="item">Less flexibility to change UI</div>
+            <div class="item">Requires iFrame embedding</div>
+            <div class="item">Requires Okta OIDC SPA app with implicit grant enabled</div>
+            <div class="item">Requires 3rd Party cookies</div>
+            <div class="item">Webauthn factors must be enrolled from Okta tenant (not application)</div>
+          </div>
           
         </div>
         

@@ -23,9 +23,25 @@
           <h2 class="ui dividing header" data-se="overview-doc-header">
             My Step Up 2 MFA testing
           </h2>
-          <p>Hello, {{userinfo.name}}. Testing!!!
+          <p>Hello, {{userinfo.name}}.
           </p>
-          <p>This step up uses Okta API calls. Transfers > $1000 will trigger a step up.</p>
+          <p>This step up uses Okta API calls.</p>
+          <p>Transfers > $1000 will trigger a step up.</p>
+          
+          Advantages:
+          <div class="ui bulleted list">
+            <div class="item">Full flexibility to change UI</div>
+            <div class="item">Can filter out weaker factors as required</div>
+          </div>
+          
+          Disadvantages:
+          <div class="ui bulleted list">
+            <div class="item">More effort to design and implement</div>
+            <div class="item">Requires UI for each of the different factors</div>
+            <div class="item">Requires API calls for list, challenge, and verification/polling of factors</div>
+          </div>          
+          
+          
         </div>
 
         <div id="transfer_success_msg" class="ui positive message">
