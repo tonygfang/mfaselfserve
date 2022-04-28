@@ -4,17 +4,18 @@ $(document).ready(function () {
   // initialize semantic dropdowns
   // $(".ui.dropdown").dropdown();
 
-  $("#transfer_success_msg").hide();
-  $("#transfer_error_msg").hide();
-
+  $("#from_account").dropdown();
+  $("#to_account").dropdown();
+  
   $("#from_account").dropdown("set selected", "800000");
   $("#to_account").dropdown("set selected", "800001");
 
-  $("#error_msg_stepup").hide();
-  $("#warning_msg_stepup").hide();
+  $("#transfer_success_msg").hide();
+  $("#transfer_error_msg").hide();
 
-  hideAllStepup();
+  initializeStepup();
 });
+
 
 const messageDelay = 10000;
 const resendDelayEmail = 10000;
@@ -52,10 +53,11 @@ function onFactorDropdownChange(value, text) {
 
   // set image
   // defined in factorutil.js
-  let iconUrl = getIconUrl(value);
-  $("#img_factor_stepup").attr("src", iconUrl);
-  let factorName = getName(value);
-  $("#name_factor_stepup").text(factorName);
+  // let icon = getIcon(value);
+  // $("#img_factor_stepup").attr("src", icon);
+  $("#img_factor_stepup").attr("src", getLogo(value));
+  // let factorName = getName(value);
+  $("#name_factor_stepup").text(getName(value));
 
   // show factor ui
   switch (value) {
@@ -87,7 +89,7 @@ function getDropdownItem(factor) {
   console.log("getDropdownItem");
 
   let item = `<div class="item" data-value="${factor.type}">`;
-  item += `<img class="ui avatar image" src="${factor.iconUrl}" />`;
+  item += `<img class="ui avatar image" src="${factor.icon}" />`;
   item += `${factor.name}`;
   item += `</div>`;
   
@@ -98,7 +100,7 @@ function initializeFactorDropdown() {
   console.log("initializeFactorDropdown");
 
   let factors = getFactorsByType(listedFactors);
-  $("#factor_dropdown").dropdown('clear');
+  $("#factor_dropdown .menu").empty();
   
   factors
     .forEach((o) => {
@@ -107,21 +109,29 @@ function initializeFactorDropdown() {
       $("#factor_dropdown .menu").append(item);
     });
 
-  let config = {
-    onChange: onFactorDropdownChange,
-  };
+  // let config = {
+  //   onChange: onFactorDropdownChange,
+  // };
 
-  $("#factor_dropdown").dropdown(config);
+  $("#factor_dropdown").dropdown('refresh');
   $("#factor_dropdown").dropdown('set selected', factors[0].type)
 }
 
 function initializeStepup() {
   console.log("initializeStepup");
 
-  hideStepupMessages();
-
   verifyResponse = {};
   listedFactors = {};
+  
+  let config = {
+    onChange: onFactorDropdownChange,
+  };
+
+  $("#factor_dropdown").dropdown(config);
+  
+  hideStepupMessages();
+
+  hideAllStepup();
 }
 
 // todo: add parameter for factor assurance level
