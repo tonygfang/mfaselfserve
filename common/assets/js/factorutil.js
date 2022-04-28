@@ -1,52 +1,58 @@
 // add factorType_provider for any supported factors
 const factorTypeMap = {
-  question_OKTA: 'question',
-  sms_OKTA: 'sms',
-  call_OKTA: 'call',
-  email_OKTA: 'email',
-  push_OKTA: 'ov',
-  'token:software:totp_OKTA': 'ov',
-  'token:software:totp_GOOGLE': 'google',
-  webauthn_FIDO: 'webauthn',
+  question_OKTA: "question",
+  sms_OKTA: "sms",
+  call_OKTA: "call",
+  email_OKTA: "email",
+  push_OKTA: "ov",
+  "token:software:totp_OKTA": "ov",
+  "token:software:totp_GOOGLE": "google",
+  webauthn_FIDO: "webauthn",
 };
 
 const factorAttrs = {
   question: {
     name: "Security Question",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/question_38x38.png?v=1648214852200",
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/question_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/question_70x70.png",
   },
   sms: {
     name: "SMS",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/sms_38x38.png?v=1648214837545",
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/sms_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/sms_70x70.png",
   },
   call: {
     name: "Voice Call",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/voicecall_38x38.png?v=1648214837268",
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/voicecall_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/voicecall_70x70.png",
   },
   email: {
     name: "Email",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/email_38x38.png?v=1648214837403",
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/email_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/email_70x70.png",
   },
   ov: {
     name: "Okta Verify",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/oktaVerify_38x38.png?v=1648214837364",
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/oktaVerify_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/oktaVerify_70x70.png",
   },
   google: {
     name: "Google Authenticator",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/googleAuth_38x38.png?v=1648214837511"
-  },  
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/googleAuth_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/googleAuth_70x70.png",
+  },
   webauthn: {
     name: "Security Key or Biometric Authenticator",
-    iconUrl: "https://cdn.glitch.global/108d8383-74d9-4080-9432-486b3f71ad74/webauthn_38x38.png?v=1648214837268"
+    icon: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/webauthn_38x38.png",
+    logo: "https://global.oktacdn.com/okta-signin-widget/6.0.0/img/icons/mfa/webauthn_70x70.png",
   },
 };
-
 
 function isSupportedFactor(type, provider) {
   let supportedFactors = Object.keys(factorTypeMap);
   let key = `${type}_${provider}`;
   let result = supportedFactors.includes(key);
-  
+
   return result;
 }
 
@@ -58,22 +64,21 @@ function getName(type) {
 function getType(factorType, provider) {
   let key = `${factorType}_${provider}`;
   let type = factorTypeMap[key];
-  
+
   return type;
 }
-
 
 function getDropdownItems(factors) {
   // add supported factors to object with type as key
   // this will avoid dupe entries (OV, webauthn)
   let items = {};
-  factors.forEach(factor => {
+  factors.forEach((factor) => {
     if (isSupportedFactor(factor.factorType, factor.provider)) {
       let type = getType(factor.factorType, factor.provider);
       items[type] = { name: getName(type), value: type };
     }
   });
-  
+
   // return values list
   return Object.values(items);
 }
@@ -82,31 +87,37 @@ function getFactorsByType(factors) {
   // add supported factors to object with type as key
   // this will avoid dupe entries (OV, webauthn)
   let items = {};
-  factors.forEach(factor => {
+  factors.forEach((factor) => {
     if (isSupportedFactor(factor.factorType, factor.provider)) {
       let type = getType(factor.factorType, factor.provider);
-      items[type] = { 
+      items[type] = {
         type: type,
-        name: getName(type), 
-        iconUrl: getIconUrl(type) 
+        name: getName(type),
+        icon: getIcon(type),
       };
     }
   });
-  
+
   // return values list
   return Object.values(items);
-  
-  
 }
 
-function getIconUrl(type) {
-  console.log("getIconUrl");
+function getIcon(type) {
+  console.log("getIcon");
   console.log(type);
-  return factorAttrs[type].iconUrl;
+  return factorAttrs[type].icon;
+}
+
+function getLogo(type) {
+  console.log("getLogo");
+  console.log(type);
+  return factorAttrs[type].logo;
 }
 
 function getFactor(factors, factorType, provider) {
-  let obj = factors.find(o => o.factorType === factorType && o.provider === provider);
+  let obj = factors.find(
+    (o) => o.factorType === factorType && o.provider === provider
+  );
   return obj;
 }
 
@@ -117,32 +128,31 @@ function maskEmail(email) {
   let result = `${name.substring(0, 1)}...${name.substring(
     name.length - 1
   )}@${domain}`;
-  
+
   return result;
 }
 
 function maskPhone(phone) {
   console.log("maskPhone");
-  
+
   console.log(phone);
-  
+
   let phoneStart = phone.substring(0, 2);
-  
+
   console.log(phoneStart);
-  
+
   let maskLength = phone.length - 2 - 4;
   let maskedNumbers = "X".repeat(maskLength);
 
   console.log(maskLength);
   console.log(maskedNumbers);
-  
+
   let phoneEnd = phone.substring(maskLength + 2);
-  
+
   console.log(phoneEnd);
 
   let result = `${phoneStart}${maskedNumbers}${phoneEnd}`;
   console.log(result);
 
   return result;
-  
 }
