@@ -101,6 +101,10 @@ module.exports = function SampleWebServer(
   app.get("/verify-webauthn", (req, res) => {
     res.render("verify-webauthn");
   });
+
+  app.get("/500", (req, res) => {
+    res.status(500).json("500 error");
+  });  
   
   app.get("/profile", oidc.ensureAuthenticated(), (req, res) => {
     // Convert the userinfo object into an attribute array, for rendering with mustache
