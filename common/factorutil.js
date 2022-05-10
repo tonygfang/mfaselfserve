@@ -153,7 +153,12 @@ function getType(factorType, provider) {
   return type;
 }
 
-const mfaRedirectUrl = `https://${process.env.PROJECT_DOMAIN}.glitch.me/mfa`;
+var baseUrl = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
+if (process.env.CUSTOM_DOMAIN) {
+    baseUrl = process.env.CUSTOM_DOMAIN;
+}
+
+const mfaRedirectUrl = `${baseUrl}/mfa`;
 
 function getSetupLink(factorType, provider) {
   let key = `${factorType}_${provider}`;
