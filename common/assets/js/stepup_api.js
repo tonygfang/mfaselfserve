@@ -23,7 +23,6 @@ const resendDelaySMS = 10000;
 const resendDelayCall = 10000;
 const pollDelayPush = 10000;
 
-var stepupTimeout;
 var listedFactors;
 var verifyResponse;
 
@@ -52,9 +51,6 @@ function onFactorDropdownChange(value, text) {
 
   hideStepupMessages();
 
-  console.log('Clear timeouts');
-  clearTimeout(stepupTimeout);
-  
   // set image
   // defined in factorutil.js
   // let icon = getIcon(value);
@@ -331,7 +327,7 @@ function challengeSMS() {
       $("#error_msg_stepup").fadeOut("slow");
 
       // show resend sms message following delay
-      stepupTimeout = setTimeout("showResendSMSButton()", resendDelaySMS);
+      setTimeout("showResendSMSButton()", resendDelaySMS);
     })
     .fail(function (err, textStatus) {
       showError(err);
@@ -438,7 +434,7 @@ function challengeCall() {
       $("#error_msg_stepup").fadeOut("slow");
 
       // show call again message following delay
-      stepupTimeout = setTimeout("showCallAgainButton()", resendDelayCall);
+      setTimeout("showCallAgainButton()", resendDelayCall);
     })
     .fail(function (err, textStatus) {
       showError(err);
@@ -543,7 +539,7 @@ function challengeEmail() {
       showVerifyEmail(maskedEmail);
 
       // show resend email message following delay
-      stepupTimeout = setTimeout("showResendEmailWarning()", resendDelayEmail);
+      setTimeout("showResendEmailWarning()", resendDelayEmail);
     })
     .fail(function (err, textStatus) {
       showError(err);
@@ -668,7 +664,7 @@ function challengeOVPush() {
       $("#error_msg_stepup").fadeOut("slow");
 
       // start polling
-      stepupTimeout = setTimeout(pollOVPush(factor.id, transactionid), pollDelayPush);
+      setTimeout(pollOVPush(factor.id, transactionid), pollDelayPush);
     })
     .fail(function (err, textStatus) {
       showError(err);
@@ -693,7 +689,7 @@ function pollOVPush(factorid, transactionid) {
       switch (response.factorResult) {
         case "WAITING":
           console.log("waiting, set the timeout again");
-          stepupTimeout = setTimeout(pollOVPush(factorid, transactionid), pollDelayPush);
+          setTimeout(pollOVPush(factorid, transactionid), pollDelayPush);
           break;
 
         case "SUCCESS":

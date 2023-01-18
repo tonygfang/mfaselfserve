@@ -21,9 +21,6 @@ var SPA_CLIENT_ID = process.env.SPA_CLIENT_ID;
 var OKTA_TESTING_DISABLEHTTPSCHECK = process.env.OKTA_TESTING_DISABLEHTTPSCHECK ? true : false;
 
 var baseUrl = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
-if (process.env.CUSTOM_DOMAIN) {
-    baseUrl = process.env.CUSTOM_DOMAIN;
-}
 var redirectUrl = baseUrl + '/callback';
 
 
@@ -35,7 +32,7 @@ module.exports = {
       clientSecret: CLIENT_SECRET,
       issuer: ISSUER,
       appBaseUrl: baseUrl,
-      scope: 'openid profile email',
+      scope: 'openid profile email offline_access device_sso',
       testing: {
         disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
       }

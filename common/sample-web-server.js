@@ -101,22 +101,52 @@ module.exports = function SampleWebServer(
   app.get("/verify-webauthn", (req, res) => {
     res.render("verify-webauthn");
   });
-
-  app.get("/500", (req, res) => {
-    res.status(500).json("500 error");
-  });  
   
   app.get("/profile", oidc.ensureAuthenticated(), (req, res) => {
     // Convert the userinfo object into an attribute array, for rendering with mustache
     const userinfo = req.userContext && req.userContext.userinfo;
     const attributes = Object.entries(userinfo);
+
+    const tokens = req.userContext.tokens;
+    console.log(`Access Token: ${tokens.access_token}`);
+    console.log(`Id Token: ${tokens.id_token}`);
+    console.log(`Refresh Token: ${tokens.refresh_token}`);
+    console.log(`Device Secret: ${tokens.device_secret}`);
+    // console.log(`scope: ${tokens.scope}`);
+    
+    // const tokenAttrs = Object.entries(tokens);
+    // console.log(`tokenAttrs: ${tokenAttrs}`);
+    
     res.render("profile", {
       isLoggedIn: !!userinfo,
       userinfo: userinfo,
       attributes,
+      tokens
     });
   });
 
+  
+  app.get("/tokens", oidc.ensureAuthenticated(), (req, res) => {
+    // Convert the userinfo object into an attribute array, for rendering with mustache
+    const userinfo = req.userContext && req.userContext.userinfo;
+
+    const tokens = req.userContext.tokens;
+    // console.log(`Access Token: ${tokens.access_token}`);
+    // console.log(`Id Token: ${tokens.id_token}`);
+    // console.log(`Refresh Token: ${tokens.refresh_token}`);
+    // console.log(`Device Secret: ${tokens.device_secret}`);
+    // console.log(`scope: ${tokens.scope}`);
+    
+    // const tokenAttrs = Object.entries(tokens);
+    // console.log(`tokenAttrs: ${tokenAttrs}`);
+    
+    res.render("tokens", {
+      isLoggedIn: !!userinfo,
+      userinfo: userinfo,
+      tokens
+    });
+  });  
+  
   app.get("/mfa", oidc.ensureAuthenticated(), (req, res) => {
     // Convert the userinfo object into an attribute array, for rendering with mustache
     const userinfo = req.userContext && req.userContext.userinfo;
