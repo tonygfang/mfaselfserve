@@ -16,7 +16,7 @@ It may look something like:
 ```ini
 
 # Okta config
-OKTA_URL="https://myoktatenant.oktapreview.com"
+OKTA_URL="https://yourOktaDomain.com.com"
 API_KEY=abc123
 AUTHORIZATION_SERVER=aus123456
 CLIENT_ID=123
@@ -25,7 +25,7 @@ SPA_CLIENT_ID=aaa
 
 # Okta step up MFA app
 STEPUP_CLIENT_ID=123
-STEPUP_URL=https://myoktatenant.oktapreview.com/home/oidc_client/aaa/bbb
+STEPUP_URL=https://yourOktaDomain.com/home/oidc_client/aaa/bbb
 
 # Okta MFA Enroll Policy apps
 SMS_CLIENT_ID=aaa
