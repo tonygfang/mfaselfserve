@@ -32,7 +32,7 @@ module.exports = {
       clientSecret: CLIENT_SECRET,
       issuer: ISSUER,
       appBaseUrl: baseUrl,
-      scope: 'openid profile email',
+      scope: 'openid profile email offline_access device_sso',
       testing: {
         disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
       }
