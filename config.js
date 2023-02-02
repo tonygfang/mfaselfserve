@@ -4,16 +4,6 @@ const fs = require('fs');
 const https = require("https");
 
 
-// Read environment variables from "testenv". Override environment vars if they are already set. https://www.npmjs.com/package/dotenv
-// const TESTENV = path.resolve(__dirname, 'testenv');
-// if (fs.existsSync(TESTENV)) {
-//   const envConfig = dotenv.parse(fs.readFileSync(TESTENV));
-//   Object.keys(envConfig).forEach((k) => {
-//     process.env[k] = envConfig[k];
-//   });
-// }
-
-
 var ISSUER = process.env.OKTA_URL + '/oauth2/' + process.env.AUTHORIZATION_SERVER;
 var CLIENT_ID = process.env.CLIENT_ID;
 var CLIENT_SECRET = process.env.CLIENT_SECRET;
