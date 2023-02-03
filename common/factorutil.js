@@ -195,7 +195,7 @@ function getErrorMessage(err) {
 
   return msg;
 }
- 
+
 function getIconUrl(factorType, provider) {
   let key = `${factorType}_${provider}`;
   let iconUrl = factorMap[key].iconUrl;

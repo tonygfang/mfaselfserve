@@ -16,16 +16,33 @@
           <p>Hello {{userinfo.name}}. Your OIDC tokens are below.
           </p>
           <p>This route is protected with the <code>oidc.ensureAuthenticated()</code> middleware, which will ensure that this page cannot be accessed until you have authenticated.</p>
+          
         </div>
 
         <div class="ui form">
           <div class="field">
-            <label>access_token</label>
+            <label>access_token jwt</label>
             <textarea readonly="">{{tokens.access_token}}</textarea>
           </div>
           <div class="field">
-            <label>id_token</label>
+            <label>access_token header</label>
+            <textarea readonly="">{{accessToken.header}}</textarea>
+          </div>
+          <div class="field">
+            <label>access_token payload</label>
+            <textarea readonly="">{{accessToken.payload}}</textarea>
+          </div>
+          <div class="field">
+            <label>id_token jwt</label>
             <textarea readonly="">{{tokens.id_token}}</textarea>
+          </div>
+          <div class="field">
+            <label>id_token header</label>
+            <textarea readonly="">{{idToken.header}}</textarea>
+          </div>
+          <div class="field">
+            <label>id_token payload</label>
+            <textarea readonly="">{{idToken.payload}}</textarea>
           </div>
           <div class="field">
             <label>refresh_token</label>
