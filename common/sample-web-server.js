@@ -30,6 +30,7 @@ const auth = require("../auth");
 const okta = require("@okta/okta-sdk-nodejs");
 
 const factorutil = require("./factorutil");
+const jwtdecoder = require("./jwtdecoder");
 
 // "atob" should be read as "ASCII to binary"
 // atob converts Base64-encoded ASCII string to binary
@@ -108,10 +109,10 @@ module.exports = function SampleWebServer(
     const attributes = Object.entries(userinfo);
 
     const tokens = req.userContext.tokens;
-    console.log(`Access Token: ${tokens.access_token}`);
-    console.log(`Id Token: ${tokens.id_token}`);
-    console.log(`Refresh Token: ${tokens.refresh_token}`);
-    console.log(`Device Secret: ${tokens.device_secret}`);
+    // console.log(`Access Token: ${tokens.access_token}`);
+    // console.log(`Id Token: ${tokens.id_token}`);
+    // console.log(`Refresh Token: ${tokens.refresh_token}`);
+    // console.log(`Device Secret: ${tokens.device_secret}`);
     // console.log(`scope: ${tokens.scope}`);
     
     // const tokenAttrs = Object.entries(tokens);
@@ -140,9 +141,14 @@ module.exports = function SampleWebServer(
     // const tokenAttrs = Object.entries(tokens);
     // console.log(`tokenAttrs: ${tokenAttrs}`);
     
+    const accessToken = jwtdecoder.decodeToken(tokens.access_token);
+    const idToken = jwtdecoder.decodeToken(tokens.id_token);
+    
     res.render("tokens", {
       isLoggedIn: !!userinfo,
       userinfo: userinfo,
+      accessToken,
+      idToken,
       tokens
     });
   });  
