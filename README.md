@@ -1,14 +1,14 @@
-# Express Sample Applications for Okta
+# Okta MFA Dashboard
 
-This repository contains several sample applications that show you how to integrate various Okta use-cases into your Node.js application that uses the Express framework.
+This is a Node.js application that uses the Express framework.
 
 https://github.com/okta/samples-nodejs-express-4/
 
 ## Configuration
 
-All of the samples share a single configuration file, [config.js](config.js). 
-The config uses environment variables which can be either exported in the shell or stored in a file named `testenv` in this directory. 
-See [dotenv](https://www.npmjs.com/package/dotenv) for more details on this file format. 
+All of the samples share a single configuration file, [config.js](config.js).
+The config uses environment variables which can be either exported in the shell or stored in a file named `testenv` in this directory.
+See [dotenv](https://www.npmjs.com/package/dotenv) for more details on this file format.
 For Glitch, it's .env.
 
 It may look something like:
@@ -16,7 +16,7 @@ It may look something like:
 ```ini
 
 # Okta config
-OKTA_URL="https://yourOktaDomain.com.com"
+OKTA_URL="https://yourOktaDomain.com"
 API_KEY=abc123
 AUTHORIZATION_SERVER=aus123456
 CLIENT_ID=123
