@@ -8,6 +8,8 @@
     <script src="/assets/js/loader.js"></script>
     <script src="/assets/js/event_modal.js"></script>
     <script src="/assets/js/factors.js"></script>
+    <script src="/assets/js/test.js"></script>
+    <script src="/assets/js/jwtdecoder.js"></script>
     
   </head>
   <body id="samples">
@@ -28,11 +30,32 @@
         </div>
 
 
-      {{>modal-test}}
+        {{>modal-test}}
+      
+      
+        <div class="field">
+          <label>access_token header js</label>
+          <textarea id="textarea_accessTokenHeader" readonly="" rows="4"></textarea>
+        </div>
+          
 
 
       </div>
 
     </div>
+    
+    <script type="text/javascript">
+      const access_token = '{{tokens.access_token}}';
+      console.log(`hello ${access_token}`);
+      //mytest2(access_token);
+      
+      const accessToken = decodeToken(access_token);
+      console.log(`jwt ${accessToken.jwt}`);
+      console.log(`header ${accessToken.header}`);
+      console.log(`payload ${accessToken.payload}`);
+      
+      $('#textarea_accessTokenHeader').text(accessToken.header);
+      
+    </script>
   </body>
 </html>

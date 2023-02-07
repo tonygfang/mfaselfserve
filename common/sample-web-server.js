@@ -141,14 +141,14 @@ module.exports = function SampleWebServer(
     // const tokenAttrs = Object.entries(tokens);
     // console.log(`tokenAttrs: ${tokenAttrs}`);
     
-    const accessToken = jwtdecoder.decodeToken(tokens.access_token);
+    // const accessToken = jwtdecoder.decodeToken(tokens.access_token);
     const idToken = jwtdecoder.decodeToken(tokens.id_token);
     
     res.render("tokens", {
       isLoggedIn: !!userinfo,
       userinfo: userinfo,
-      accessToken,
-      idToken,
+      // accessToken,
+      // idToken,
       tokens
     });
   });  
@@ -499,12 +499,14 @@ module.exports = function SampleWebServer(
     const userinfo = req.userContext && req.userContext.userinfo;
     const attributes = Object.entries(userinfo);
     let questions = factorutil.questions;
+    const tokens = req.userContext.tokens;
 
     res.render("test", {
       isLoggedIn: !!userinfo,
       userinfo: userinfo,
       attributes,
       questions,
+      tokens
     });
   });
 
