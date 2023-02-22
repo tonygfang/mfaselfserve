@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>head}}
+
+    <script src="/assets/js/brim.js"></script>
+    
+  </head>
+  <body id="samples">
+
+    {{>menu}}
+
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+        <div class="doc-overview">
+          <h2 class="ui dividing header" data-se="overview-doc-header">
+            My BRIM
+          </h2>
+          <p>Hello, {{userinfo.name}}. Test BRIM links here.
+          </p>
+        </div>
+
+        <div>
+          Enter BRIM card_id: 
+        </div>
+        
+        <div id="enter_brim_card_id">
+
+          <div class="ui expand">
+            <div class="ui input">
+              <input id="card_id" type="text" placeholder="Enter BRIM card id" />
+            </div>
+          </div>   
+
+          <input class='ui primary button' type='button' value='Generate BRIM Links' onclick='generateBrimLinks();' />
+        </div>
+        
+        <div id="brim_links">
+          <p><a id="brim_native_sso" target="_blank" href="http://xyz">brim native sso</a></p>
+          <p><a id="brim_session_sso" target="_blank" href="http://xyz">brim session sso</a></p>
+        </div>
+
+
+      </div>
+
+    </div>
+    
+    <script type="text/javascript">
+      const id_token = '{{tokens.id_token}}';
+      const device_secret = '{{tokens.device_secret}}';
+    </script>
+  </body>
+</html>

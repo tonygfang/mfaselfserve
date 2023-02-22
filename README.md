@@ -18,7 +18,7 @@ It may look something like:
 # Okta config
 OKTA_URL="https://yourOktaDomain.com"
 API_KEY=abc123
-AUTHORIZATION_SERVER=aus123456
+AUTHORIZATION_SERVER=default
 CLIENT_ID=123
 CLIENT_SECRET=abc123
 SPA_CLIENT_ID=aaa

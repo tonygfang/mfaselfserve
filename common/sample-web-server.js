@@ -510,6 +510,20 @@ module.exports = function SampleWebServer(
     });
   });
 
+  app.get("/brim", oidc.ensureAuthenticated(), (req, res) => {
+    // Convert the userinfo object into an attribute array, for rendering with mustache
+    const userinfo = req.userContext && req.userContext.userinfo;
+    const attributes = Object.entries(userinfo);
+    const tokens = req.userContext.tokens;
+
+    res.render("brim", {
+      isLoggedIn: !!userinfo,
+      userinfo: userinfo,
+      attributes,
+      tokens
+    });
+  });
+  
   app.post(
     "/api/deleteFactor/:factorid",
     oidc.ensureAuthenticated(),
